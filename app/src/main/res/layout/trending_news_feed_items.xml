@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/experience_card_view"
+        android:layout_width="280dp"
+        android:layout_height="420dp"
+        android:clickable="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/passport_text_color"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
+        app:rippleColor="@color/white">
+
+        <ImageView
+            android:id="@+id/exp_bg_img_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/view_on_map_button"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="110dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="View on Map"
+                    android:textAllCaps="true"
+                    android:textColor="@color/text_black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/white"
+                    app:cornerRadius="12dp"
+                    app:elevation="0dp"
+                    app:rippleColor="@color/light_grey" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:padding="8dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/img_card_view"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="6dp"
+                    app:rippleColor="@color/white">
+
+                    <ImageView
+                        android:id="@+id/exp_profile_image_view"
+                        android:layout_width="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_margin="8dp"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/girl_in_specs" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/exp_header_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/img_card_view"
+                    android:layout_marginTop="10dp"
+                    android:text="Hotel Taj"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+
+                <LinearLayout
+                    android:id="@+id/location_news_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/exp_header_text_view"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_location_white" />
+
+                    <TextView
+                        android:id="@+id/location_exp_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:text="Mumbai, India"
+                        android:textColor="@color/text_white"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</RelativeLayout>
