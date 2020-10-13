@@ -104,6 +104,8 @@ class MainActivity : AppCompatActivity(), ValueRetrieverInterface {
         )
         binding.trendRecyclerView.adapter = hotelAdapter
 
+        /** This code was for reaching at the center of the list, which we don't need right now, as we have to reach to a specific card ! */
+
         /*binding.trendRecyclerView.post(Runnable {
             // Shifting the view to snap  near the center of the screen.
             // This does not have to be precise. From Google I/O-19, PagerSnapHelper can do the job by putting highlighted item into the accurate center.
