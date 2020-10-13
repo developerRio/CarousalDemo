@@ -2,31 +2,33 @@ package com.originalstocks.carousaldemo
 
 import android.content.Context
 import android.os.Bundle
-import android.view.Gravity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.snackbar.Snackbar
 import com.originalstocks.carousaldemo.databinding.ActivityMainBinding
 import java.util.*
 
 
 class MainActivity : AppCompatActivity(), ValueRetrieverInterface {
-
+    private val TAG = "MainActivity"
     private lateinit var binding: ActivityMainBinding
     private var experienceList: List<TrendingModel>? = null
+    private lateinit var carousalLayoutManager: CarousalLayoutManager
+    private lateinit var hotelAdapter: TrendingAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         initExperienceData()
 
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity(), ValueRetrieverInterface {
 
     private fun initExperienceData() {
         experienceList = ArrayList<TrendingModel>()
-        for (i in 0..4) {
+        for (i in 0..5) {
             val trendingModel = TrendingModel(i)
             when (i) {
                 0 -> {
@@ -77,46 +79,82 @@ class MainActivity : AppCompatActivity(), ValueRetrieverInterface {
                     trendingModel.profileImageLink =
                         "https://upload.wikimedia.org/wikipedia/en/thumb/c/cd/Taj_Hotels_logo.svg/1200px-Taj_Hotels_logo.svg.png"
                 }
+                5 -> {
+                    trendingModel.backgroundImageLink =
+                        "https://www.oyster.com/uploads/sites/35/2019/05/pool-v16657538-1440-1024x683.jpg"
+                    trendingModel.expTitle = "Hotel Taj"
+                    trendingModel.locationText = "Udaipur, India"
+                    trendingModel.profileImageLink =
+                        "https://upload.wikimedia.org/wikipedia/en/thumb/c/cd/Taj_Hotels_logo.svg/1200px-Taj_Hotels_logo.svg.png"
+                }
             }
             (experienceList as ArrayList<TrendingModel>).add(trendingModel)
         }
         binding.trendRecyclerView.setHasFixedSize(true)
 
         /** carousal */
-        val carousalLayoutManager = CarousalLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        carousalLayoutManager = CarousalLayoutManager(this, RecyclerView.HORIZONTAL, false)
 
         binding.trendRecyclerView.layoutManager = carousalLayoutManager
-        binding.trendRecyclerView.adapter = TrendingAdapter(
+
+        hotelAdapter = TrendingAdapter(
             this,
             experienceList as ArrayList<TrendingModel>,
             this
         )
-        /** further settings */
-        carousalLayoutManager.scrollToPosition((experienceList as ArrayList<TrendingModel>).size / 2)
-        binding.trendRecyclerView.post(Runnable {
+        binding.trendRecyclerView.adapter = hotelAdapter
+
+        /*binding.trendRecyclerView.post(Runnable {
             // Shifting the view to snap  near the center of the screen.
             // This does not have to be precise. From Google I/O-19, PagerSnapHelper can do the job by putting highlighted item into the accurate center.
-
+            carousalLayoutManager.scrollToPosition((experienceList as ArrayList<TrendingModel>).size / 2)
             val dx: Int =
                 (binding.trendRecyclerView.width - binding.trendRecyclerView.getChildAt(0).width) / 2
             binding.trendRecyclerView.scrollBy(-dx, 0)
             // Assign the LinearSnapHelper that will initially snap the near-center view.
             val snapHelper = PagerSnapHelper()
             snapHelper.attachToRecyclerView(binding.trendRecyclerView)
+        })*/
+
+     }
+
+    override fun onClickValueRetriever(position: Int, itemName: String) {
+        Snackbar.make(binding.root, itemName, Snackbar.LENGTH_LONG).setTextColor(getColor(R.color.white)).show()
+    }
+
+    override fun onSpecificValueRetriever(position: Int, itemName: String) {
+        Log.i(TAG, "onSpecificValueRetriever hotel name $itemName at position = $position")
+        binding.trendRecyclerView.post(Runnable {
+            // Shifting the view to snap  near the center of the screen.
+            // This does not have to be precise. From Google I/O-19, PagerSnapHelper can do the job by putting highlighted item into the accurate center.
+            carousalLayoutManager.scrollToPosition(position)
+            // evaluating horizontal offset for better scrolling capabilities,
+            val dx: Int =
+                (binding.trendRecyclerView.width - binding.trendRecyclerView.getChildAt(position).width)
+            Log.i(
+                TAG,
+                "onSpecificValueRetriever_dx = ${-dx} width = ${binding.trendRecyclerView.width} \n " +
+                        "child position width = ${binding.trendRecyclerView.getChildAt(position).width}"
+            )
+            binding.trendRecyclerView.scrollBy(dx, 0)
+            // Assigning the PagerSnapHelper that will initially snap the near-center view.
+            val snapHelper = PagerSnapHelper()
+            snapHelper.attachToRecyclerView(binding.trendRecyclerView)
         })
 
     }
 
-    override fun onClickValueRetriever(position: Int, itemName: String) {
-        Toast.makeText(this, "Selected place is : $itemName & at position : $position", Toast.LENGTH_LONG).show()
-    }
 
 }
 
 
-class TrendingAdapter(private val mContext: Context, trendingList: List<TrendingModel>, private val valueRetrieverInterface: ValueRetrieverInterface) :
+class TrendingAdapter(
+    private val mContext: Context,
+    trendingList: List<TrendingModel>,
+    private val valueRetrieverInterface: ValueRetrieverInterface
+) :
     RecyclerView.Adapter<TrendingAdapter.TrendingHolder>() {
-
+    private val TAG = "TrendingAdapter"
     private val trendingList: List<TrendingModel>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrendingHolder {
@@ -141,9 +179,21 @@ class TrendingAdapter(private val mContext: Context, trendingList: List<Trending
         holder.locationTextView.text = trendingModel.locationText
 
         holder.hotelCardView.setOnClickListener {
-            valueRetrieverInterface.onClickValueRetriever(position,
+            valueRetrieverInterface.onClickValueRetriever(
+                position,
                 (trendingModel.expTitle + " " + trendingModel.locationText)
             )
+        }
+
+
+        if (trendingModel.locationText!!.contains("Bhopal")) {
+            Log.i(TAG, "initExperienceData: textToFindInList true at position $position")
+            valueRetrieverInterface.onSpecificValueRetriever(
+                position,
+                (trendingModel.expTitle + " " + trendingModel.locationText)
+            )
+        } else {
+            Log.e(TAG, "initExperienceData: textToFindInList false")
         }
 
     }
@@ -157,7 +207,7 @@ class TrendingAdapter(private val mContext: Context, trendingList: List<Trending
         var locationTextView: TextView
         var backgroundImageView: ImageView
         var profileImageView: ImageView
-        var hotelCardView : MaterialCardView
+        var hotelCardView: MaterialCardView
 
         init {
             hotelCardView = itemView.findViewById(R.id.experience_card_view)
